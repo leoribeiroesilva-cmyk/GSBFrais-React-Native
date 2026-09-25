@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const loginUser = (login, password) => {
         login = login.toLowerCase();
         // Vérification des identifiants
-        if (login === 'Andre' && password === 'secret') {
+        if (login === 'andre' && password === 'secret') {
             setUser({ login });
             return true; // Connexion réussie
         }
