@@ -1,4 +1,5 @@
-const loginStyles = {
+import { StyleSheet as styleSheet } from "react-native";
+const loginStyles = styleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -14,4 +15,4 @@ const loginStyles = {
         width: '100%',
         marginBottom: 16,
     },
-};
+});
