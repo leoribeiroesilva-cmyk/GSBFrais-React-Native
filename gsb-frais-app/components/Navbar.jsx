@@ -13,11 +13,13 @@ function Navbar() {
                 <Pressable onPress={() => navigation.navigate('Home')}>
                     <Text style={navbarStyles.linkText}>Accueil</Text>
                 </Pressable>
-                <Pressable onPress={() => navigation.navigate('Dashboard')}>
-                    <Text style={navbarStyles.linkText}>Tableau de bord</Text>
-                </Pressable>
+                {user && (
+                    <Pressable onPress={() => navigation.navigate('Dashboard')}>
+                        <Text style={navbarStyles.linkText}>Tableau de bord</Text>
+                    </Pressable>
+                )}
             </View>
-            { user ? (
+            {user ? (
                 <View style={navbarStyles.rightContainer}>
                     <Pressable onPress={logoutUser}>
                         <Text style={navbarStyles.linkText}>Déconnexion</Text>
