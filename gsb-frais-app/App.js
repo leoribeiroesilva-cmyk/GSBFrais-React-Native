@@ -10,7 +10,7 @@ import { AuthProvider } from './context/AuthContext';
 const Stack = createNativeStackNavigator();
 function AppNavigator() {
   return (
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
