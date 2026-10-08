@@ -19,9 +19,8 @@ export default function DashboardScreen() {
     const [searchTerm, setSearchTerm] = useState('');
     // déclarer un état filterNonNull, initialisé à true. Cet état stockera la valeur du switch pour filtrer les frais avec montant valide.
     const [filterNonNull, setFilterNonNull] = useState(true);
+    // déclarer un état minMontant, initialisé avec une chaîne de caractères vide. Cet état stockera la valeur saisie par l’utilisateur pour filtrer les frais dont le montant validé est supérieur à cette valeur.
     const [minMontant, setminMontant] = useState('');
-
-
     useEffect(() => {
         // Simulation d'un appel API avec un délai de 500 ms
         setTimeout(() => {
@@ -38,15 +37,18 @@ export default function DashboardScreen() {
         if (frais.montantvalide === null) {
             return !filterNonNull; // Si filterNonNull est true, on exclut les frais avec montantvalide null
         }
-        // dexieme filtre : le filtre de recherche déjà ecrit a l'etape précédente
+        // dexieme filtre : filtre les frais en fonction du terme de recherche
         const searchLower = searchTerm.toLowerCase();
+        // troisieme filtre :  n’afficher que les notes de frais dont le montant validé est supérieur à une valeur saisie par l’utilisateur dans un champ.
+        if (minMontant && frais.montantvalide <= parseFloat(minMontant)) {
+            return false; // Exclure les frais dont le montant validé est inférieur ou égal à minMontant
+        }
         return (
             frais.id_visiteur.toString().includes(searchLower) ||
             frais.anneemois.includes(searchLower)
         )
-        // troisieme filtre :  n’afficher que les notes de frais dont le montant validé est supérieur à une valeur saisie par l’utilisateur dans un champ.
-        // a faire pour la prochaine seance d'AP
-    });
+    }
+);
 
     
     return (
@@ -71,7 +73,6 @@ export default function DashboardScreen() {
                 value={minMontant}
                 onChangeText={setminMontant}
                 keyboardType='numeric'
-                editable={false} // Désactiver la saisie pour l'instant
                 style={{ height: 40, borderColor: 'gray', borderWidth: 1, margin: 10, paddingLeft: 10 }} 
                 />
             <FlatList

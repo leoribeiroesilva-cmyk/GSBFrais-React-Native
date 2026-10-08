@@ -17,11 +17,8 @@ function AppNavigator() {
       <Stack.Screen name="Home" component={HomeScreen} />
       {/* si un utilisateur est connecté , enregistrer Stack.Screen "Dashboard" */ }
       {/*sinon, enregistrer Stack.Screen "Login" */ }
-      {user ? (
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
-      ) : (
         <Stack.Screen name="Login" component={LoginScreen} />
-      )}
     </Stack.Navigator>
   );
 }
