@@ -1,30 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// import { StatusBar } from 'expo-status-bar';
+// import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
 
 const Stack = createNativeStackNavigator();
+function AppNavigator() {
+  const { user } = useAuth();
 
-export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      {/* si un utilisateur est connecté , enregistrer Stack.Screen "Dashboard" */ }
+      {/*sinon, enregistrer Stack.Screen "Login" */ }
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+        <Stack.Screen name="Login" component={LoginScreen} />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <AuthProvider>
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
+    </AuthProvider>
+  );
+}
