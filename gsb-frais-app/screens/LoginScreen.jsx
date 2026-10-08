@@ -10,8 +10,6 @@ export default function LoginScreen() {
     const [pwd, setPassword] = useState('');
     // 2. déclarez la variable loginUser  et affectez-lui la valeur de retour de l'appel à useAuth.
     const { loginUser } = useAuth();
-    // 3. Hook pour la redirection après connexion
-    const navigation = useNavigation();
 
     // 4. Déclaration de la fonction handleSubmit
     const handleSubmits = async () => {
@@ -20,10 +18,8 @@ export default function LoginScreen() {
             const data = await loginUser(login, pwd);
             // Vérification si la connexion a réussi
             await loginUser(login, pwd);
-            if (data) {
-                // Redirection vers le tableau de bord après connexion réussie
-                navigation.navigate('Dashboard');
-            } else {
+
+            if (!loginUser (login, pwd)) {
                 Alert.alert('Erreur', 'Identifiants ou mot de passe incorrects');
             }
         } catch (error) {

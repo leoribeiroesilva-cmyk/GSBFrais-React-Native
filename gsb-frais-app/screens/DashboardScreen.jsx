@@ -10,7 +10,6 @@ import { StyleSheet } from 'react-native';
 
 
 export default function DashboardScreen() {
-    const { user } = useAuth();
     // déclarer l'état fraisList avec useState, initialisé à[]
     const [fraisList, setFraisList] = useState([]);
     // Dans DashboardScreen, déclarez un état loading initialisé à true.
@@ -21,12 +20,30 @@ export default function DashboardScreen() {
     const [filterNonNull, setFilterNonNull] = useState(true);
     // déclarer un état minMontant, initialisé avec une chaîne de caractères vide. Cet état stockera la valeur saisie par l’utilisateur pour filtrer les frais dont le montant validé est supérieur à cette valeur.
     const [minMontant, setminMontant] = useState('');
+    // recuperer user et token depuis le contexte AuthContext
+    const { user, token } = useAuth();
+    // Remplacez le useEffect de l’AP Partie 2 (setTimeout) par un appel réel à l’API, sécurisé par le token.
     useEffect(() => {
-        // Simulation d'un appel API avec un délai de 500 ms
-        setTimeout(() => {
-            setFraisList(fraisData);
-            setLoading(false); // Fin du chargement
-        }, 500);
+        const fetchFrais = async () => {
+            try {
+                // faire un appel API à l'URL ${API_URL}/frais/liste/$ pour récupérer la liste des frais 
+                const response = await fetch('${API_URL}/frais/liste/${user.id_visiteur}', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                // extraire les données de la réponse et les stocker dans data
+                const data = await response.json();
+                // mettre à jour l'état fraisList avec les données récupérées
+                setFraisList(data);
+                // mettre à jour l'état loading à false pour indiquer que le chargement est terminé
+                setLoading(false);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des frais :', error);
+                setLoading(false);
+            }
+        };
+        fetchFrais();
     }, []);
 
     if (loading) return <ActivityIndicator size="large" style={{ marginTop: 40}} />;
