@@ -16,7 +16,7 @@ export const loginStyles = StyleSheet.create({
         padding: 14,
         alignItems: "center",
     },
-    buttonText: { color: "#FFFFFF", fontWeight: "bold" },
+    buttonText: { color: "#333333", fontWeight: "bold" },
 });
 
 export default loginStyles;
