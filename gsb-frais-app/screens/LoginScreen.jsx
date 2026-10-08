@@ -1,8 +1,8 @@
 import { View, Text, TextInput, Pressable, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import loginStyles from '../styles/loginStyles';
 import { useState } from 'react';
-import LoginStyles from '../styles/LoginStyles';
 
 
 export default function LoginScreen() {
@@ -26,26 +26,29 @@ export default function LoginScreen() {
     };
     // 5. rendre le formulaire
     return (
-        <View style={LoginStyles.container}>
-            <Text style={LoginStyles.title}>Connexion</Text>
-            <View style={LoginStyles.form}>
+        <View style={loginStyles}>
+            <Text style={loginStyles.title}>Connexion</Text>
+            <View>
                 <Text>login :</Text>
                 <TextInput
                     value={login}
                     onChangeText={setLogin}
+                    style={loginStyles.input}
                 />
             </View>
-            <View style={LoginStyles.form}>
+            <View>
                 <Text>Mot de passe :</Text>
                 <TextInput
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry
-                    />
+                    style={loginStyles.input}
+                />
             </View>
             <Pressable onPress={handleSubmits}>
-                <Text>Se connecter</Text>
+                <Text style={loginStyles.buttonText}>Se connecter</Text>
             </Pressable>
         </View>
     );
 }
+

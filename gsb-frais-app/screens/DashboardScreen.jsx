@@ -1,15 +1,97 @@
-import { View, Text } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TextInput } from 'react-native';
+import { Activity, useEffect, useState } from 'react';
+import fraisData from '../data/frais.json';
+import FraisCard from '../components/FraisCard.jsx';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
+import { Switch } from 'react-native';
+import { StyleSheet } from 'react-native';
+
 
 
 export default function DashboardScreen() {
     const { user } = useAuth();
+    // déclarer l'état fraisList avec useState, initialisé à[]
+    const [fraisList, setFraisList] = useState([]);
+    // Dans DashboardScreen, déclarez un état loading initialisé à true.
+    const [loading, setLoading] = useState(true);
+    // déclarer un état  searchTerm, initialisé avec une chaîne de caractères vide. Cet étatstockera le terme (= la chaine de caractère) recherché dans la liste de frais.
+    const [searchTerm, setSearchTerm] = useState('');
+    // déclarer un état filterNonNull, initialisé à true. Cet état stockera la valeur du switch pour filtrer les frais avec montant valide.
+    const [filterNonNull, setFilterNonNull] = useState(true);
+    // déclarer un état minMontant, initialisé avec une chaîne de caractères vide. Cet état stockera la valeur saisie par l’utilisateur pour filtrer les frais dont le montant validé est supérieur à cette valeur.
+    const [minMontant, setminMontant] = useState('');
+    useEffect(() => {
+        // Simulation d'un appel API avec un délai de 500 ms
+        setTimeout(() => {
+            setFraisList(fraisData);
+            setLoading(false); // Fin du chargement
+        }, 500);
+    }, []);
 
+    if (loading) return <ActivityIndicator size="large" style={{ marginTop: 40}} />;
+
+    // Logique de filtrage : filtre les frais en fonction du terme de recherche
+    const filteredFrais = fraisList.filter((frais) => {
+        // premier filtre qui exclure les frais avec montantvalide === null
+        if (frais.montantvalide === null) {
+            return !filterNonNull; // Si filterNonNull est true, on exclut les frais avec montantvalide null
+        }
+        // dexieme filtre : filtre les frais en fonction du terme de recherche
+        const searchLower = searchTerm.toLowerCase();
+        // troisieme filtre :  n’afficher que les notes de frais dont le montant validé est supérieur à une valeur saisie par l’utilisateur dans un champ.
+        if (minMontant && frais.montantvalide <= parseFloat(minMontant)) {
+            return false; // Exclure les frais dont le montant validé est inférieur ou égal à minMontant
+        }
+        return (
+            frais.id_visiteur.toString().includes(searchLower) ||
+            frais.anneemois.includes(searchLower)
+        )
+    }
+);
+
+    
     return (
         <View>
             <Navbar />
             <Text>Tableau de bord de {user?.login}</Text>
+            <TextInput
+                placeholder='Rechercher par visiteur ou mois...'
+                value={searchTerm}
+                onChangeText={setSearchTerm}
+                style={{ height: 40, borderColor: 'gray', borderWidth: 1, margin: 10, paddingLeft: 10 }}>
+            </TextInput>
+            <View style={styles.filterRow}>
+                <Switch
+                    value={filterNonNull}
+                    onValueChange={setFilterNonNull}
+                />
+                <Text style={styles.filterLabel}>Afficher uniquement les frais avec montant valide</Text>
+            </View>
+            <TextInput
+                placeholder='Filtrer par montant supérieur à...'
+                value={minMontant}
+                onChangeText={setminMontant}
+                keyboardType='numeric'
+                style={{ height: 40, borderColor: 'gray', borderWidth: 1, margin: 10, paddingLeft: 10 }} 
+                />
+            <FlatList
+                data={filteredFrais}
+                keyExtractor={(item) => item.id_frais.toString()}
+                renderItem={({ item }) => <FraisCard frais={item} />}
+            />
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    filterRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 10,
+        marginBottom: 10,
+    },
+    filterLabel: {
+        marginLeft: 10,
+    },
+});
