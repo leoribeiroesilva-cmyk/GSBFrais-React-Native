@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     const loginUser = async (login, pwd) => {
         const data = await signIn(login, pwd);
         setUser(data.visiteur);
-        setToken(data.acces_token);
+        setToken(data.token);
         return data;
     }
 

@@ -1,11 +1,11 @@
 import { View, Text, FlatList, ActivityIndicator, TextInput } from 'react-native';
 import { Activity, useEffect, useState } from 'react';
-import fraisData from '../data/frais.json';
 import FraisCard from '../components/FraisCard.jsx';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { Switch } from 'react-native';
 import { StyleSheet } from 'react-native';
+import { API_URL } from '../services/authService.js';
 
 
 
@@ -26,12 +26,13 @@ export default function DashboardScreen() {
     useEffect(() => {
         const fetchFrais = async () => {
             try {
-                // faire un appel API à l'URL ${API_URL}/frais/liste/$ pour récupérer la liste des frais 
-                const response = await fetch('${API_URL}/frais/liste/${user.id_visiteur}', {
+                // faire un appel API à l'URL ${API_URL}frais/liste/$ pour récupérer la liste des frais 
+                const response = await fetch(`${API_URL}frais/liste/${user.id_visiteur}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                console.log('Réponse de l’API :', response, user.id_visiteur);
                 // extraire les données de la réponse et les stocker dans data
                 const data = await response.json();
                 // mettre à jour l'état fraisList avec les données récupérées
