@@ -1,4 +1,6 @@
-const navbarStyles = {
+import { StyleSheet } from 'react-native';
+
+const navbarStyles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -15,6 +17,6 @@ const navbarStyles = {
         color: 'white',
         marginRight: 16,
     },
-};
+});
 
 export default navbarStyles;
