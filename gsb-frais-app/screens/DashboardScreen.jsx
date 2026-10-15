@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { Switch } from 'react-native';
 import { StyleSheet } from 'react-native';
-import { API_URL } from '../services/authService.js';
+import { API_URL } from '../config.js';
 
 
 
