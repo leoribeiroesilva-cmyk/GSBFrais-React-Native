@@ -14,9 +14,15 @@ function Navbar() {
                     <Text style={navbarStyles.linkText}>Accueil</Text>
                 </Pressable>
                 {user && (
+                <>
                 <Pressable onPress={() => navigation.navigate('Dashboard')}>
                     <Text style={navbarStyles.linkText}>Tableau de bord</Text>
                 </Pressable>
+
+                <Pressable onPress={() => navigation.navigate('addFrais')}>
+                    <Text style={navbarStyles.linkText}></Text>
+                </Pressable>
+                </>
                 )}
             </View>
             {user ? (
