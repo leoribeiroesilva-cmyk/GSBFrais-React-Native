@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import { useAuth } from "../context/AuthContext";
-import { useNavigation } from "@react-navigation/native";
-import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import { API_URL } from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import styles from "../styles/FraisFormStyles.js";
 
-export default function FraisForm() {
+export default function FraisForm({ frais=null}) {
     const [idFrais, setIdFrais] = useState(null);
     const [anneeMois, setAnneeMois] = useState('');
     const [nbJustificatifs, setNbJustificatifs] = useState('');
@@ -14,6 +15,16 @@ export default function FraisForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { user, token } = useAuth();
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        if (frais) {
+            setIdFrais(frais.id_frais);
+            setMontant(frais.montant);
+            setNbJustificatifs(frais.nbjustificatifs.toString());
+            setAnneeMois(frais.anneemois);
+        }
+    }, [frais]);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -27,22 +38,34 @@ export default function FraisForm() {
         nbjustificatifs: parseInt(nbJustificatifs, 10),
         id_visiteur: user.id_visiteur,
         };
+
+        let url, body;
+        if (frais) {
+            // Modification (UPDATE)
+            fraisData.id_frais = idFrais;
+            fraisData.montant = parseFloat(montant);
+            fraisData.id_etat = frais.id_etat; // conserver l'état actuel
+            url = `${API_URL}frais/modif`;
+        } else {
+            // Création (CREATE)
+            url = `${API_URL}frais/ajout`;
+        }
         // ToDo : envoyer fraisData à `${API_URL}frais/ajout` avec fetch,
         // méthode POST, header Authorization Bearer token, body JSON.stringify(fraisData)
-        const response = await fetch(`${API_URL}frais/ajout`, {
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(fraisData),
-            // ToDo : naviguer vers "Dashboard" après succès 
         });
         if (!response.ok) {
             const data = await response.json().catch(() => ({}));
 
             throw new Error(data.error || `Erreur HTTP ${response.status}`);
         }
+        navigation.navigate("Dashboard");
         } catch (err) {
         console.error("Erreur:", err);
         setError(err.message || "Erreur lors de l'enregistrement");
@@ -109,9 +132,11 @@ export default function FraisForm() {
                 onPress={handleSubmit}
                 disabled={loading}
             >
+                
                 <Text style={styles.buttonText}>
-                    {loading ? "Enregistrement..." : frais ? "Mettre à jour" : "Ajouter"}
+                    {loading ? "Enregistrement..." : "Enregistrer"}  
                 </Text>
+                
             </Pressable>
             {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
